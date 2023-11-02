@@ -13,10 +13,6 @@ let package = Package(
             name: "PizzaMacros",
             targets: ["PizzaMacros"]
         ),
-        .executable(
-            name: "PizzaMacrosClient",
-            targets: ["PizzaMacrosClient"]
-        ),
     ],
     dependencies: [
         // Depend on the Swift 5.9 release of SwiftSyntax
