@@ -8,6 +8,7 @@ import PizzaMacrosMacros
 
 let testMacros: [String: Macro.Type] = [
 	"URL": URLMacro.self,
+	"Data": DataBase64Macro.self,
 ]
 
 final class PizzaMacrosTests: XCTestCase {
@@ -18,6 +19,17 @@ final class PizzaMacrosTests: XCTestCase {
 			"""#,
 			expandedSource: """
 			URL(string: "https://google.com")!
+			""",
+			macros: testMacros)
+	}
+
+	func testDataBase64Macro() throws {
+		assertMacroExpansion(
+			#"""
+			#Data(base64Encoded: "Zm9vYmFy")
+			"""#,
+			expandedSource: """
+			Data(base64Encoded: "Zm9vYmFy")!
 			""",
 			macros: testMacros)
 	}
