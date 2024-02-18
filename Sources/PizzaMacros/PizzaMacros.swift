@@ -6,3 +6,5 @@ public macro URL(_ stringLiteral: String) -> URL = #externalMacro(module: "Pizza
 @freestanding(expression)
 public macro Data(base64Encoded stringLiteral: String) -> Data = #externalMacro(module: "PizzaMacrosMacros", type: "DataBase64Macro")
 
+@freestanding(expression)
+public macro String(base64Encoded stringLiteral: String) -> String = #externalMacro(module: "PizzaMacrosMacros", type: "StringBase64Macro")

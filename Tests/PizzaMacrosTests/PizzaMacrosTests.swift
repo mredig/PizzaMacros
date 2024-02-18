@@ -9,6 +9,7 @@ import PizzaMacrosMacros
 let testMacros: [String: Macro.Type] = [
 	"URL": URLMacro.self,
 	"Data": DataBase64Macro.self,
+	"String": StringBase64Macro.self,
 ]
 
 final class PizzaMacrosTests: XCTestCase {
@@ -30,6 +31,17 @@ final class PizzaMacrosTests: XCTestCase {
 			"""#,
 			expandedSource: """
 			Data(base64Encoded: "Zm9vYmFy")!
+			""",
+			macros: testMacros)
+	}
+
+	func testStringBase64Macro() throws {
+		assertMacroExpansion(
+			#"""
+			#String(base64Encoded: "Zm9vYmFy")
+			"""#,
+			expandedSource: """
+			String(data: Data(base64Encoded: "Zm9vYmFy")!, encoding: .utf8)!
 			""",
 			macros: testMacros)
 	}

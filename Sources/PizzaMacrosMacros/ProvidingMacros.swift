@@ -8,5 +8,6 @@ struct PizzaMacrosPlugin: CompilerPlugin {
 	let providingMacros: [Macro.Type] = [
 		URLMacro.self,
 		DataBase64Macro.self,
+		StringBase64Macro.self,
 	]
 }
