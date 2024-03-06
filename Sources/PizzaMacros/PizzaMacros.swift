@@ -11,3 +11,6 @@ public macro String(base64Encoded stringLiteral: String) -> String = #externalMa
 
 @attached(accessor)
 public macro PropertyForwarder<T, U, V>(parentProperty: KeyPath<T, U>, forwardedProperty: KeyPath<U, V>) = #externalMacro(module: "PizzaMacrosMacros", type: "PropertyForwarderPropertyMacro")
+
+@attached(accessor)
+public macro PropertyForwarder<T, U>(parentProperty: KeyPath<T, U>) = #externalMacro(module: "PizzaMacrosMacros", type: "PropertyForwarderPropertyMacro")

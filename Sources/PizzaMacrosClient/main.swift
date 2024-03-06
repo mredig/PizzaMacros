@@ -18,6 +18,6 @@ struct Bar {
 	@PropertyForwarder(parentProperty: \Bar.foo, forwardedProperty: \Foo.value)
 	var value: Int
 
-	@PropertyForwarder(parentProperty: \Bar.foo, forwardedProperty: \.secondValue)
+	@PropertyForwarder(parentProperty: \Bar.foo)
 	var secondValue: String
 }

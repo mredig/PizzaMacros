@@ -83,5 +83,42 @@ final class PizzaMacrosTests: XCTestCase {
             """,
         macros: testMacros)
     }
+
+    func testPropertyForwarderMacroImplicit() throws {
+        assertMacroExpansion(
+            """
+            struct Foo {
+                var value: Int
+                var secondValue: String
+            }
+
+            struct Bar {
+                var foo: Foo
+
+                @PropertyForwarder(parentProperty: \\Bar.foo)
+                var value: Int
+            }
+            """,
+        expandedSource:
+            """
+            struct Foo {
+                var value: Int
+                var secondValue: String
+            }
+
+            struct Bar {
+                var foo: Foo
+                var value: Int {
+                    get {
+                        self [keyPath: \\Bar.foo] [keyPath: \\.value]
+                    }
+                    set {
+                        self [keyPath: \\Bar.foo] [keyPath: \\.value] = newValue
+                    }
+                }
+            }
+            """,
+        macros: testMacros)
+    }
 }
 #endif

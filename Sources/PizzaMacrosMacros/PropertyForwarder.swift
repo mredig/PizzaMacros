@@ -11,17 +11,24 @@ public struct PropertyForwarderPropertyMacro: AccessorMacro {
 		guard
 			let varDecl = declaration.as(VariableDeclSyntax.self),
 			let binding = varDecl.bindings.first,
-//			let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
+			let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
 			binding.accessorBlock == nil,
-//			let type = binding.typeAnnotation?.type,
-
 			case .argumentList(let arguments) = node.arguments,
-			arguments.count == 2
+			1...2 ~= arguments.count
 		else { return [] }
 
+		if arguments.count == 2 {
+			return explicitForwardedPath(arguments: arguments)
+		} else {
+			return implicitForwardedPath(arguments: arguments, identifier: identifier)
+		}
+	}
+
+	private static func explicitForwardedPath(arguments: LabeledExprListSyntax) -> [AccessorDeclSyntax] {
 		let first = arguments.startIndex
 		let second = arguments.index(after: first)
 		let parentKeypath = arguments[first].expression
+
 		let forwardedKeypath = arguments[second].expression
 
 		return [
@@ -30,6 +37,26 @@ public struct PropertyForwarderPropertyMacro: AccessorMacro {
 			""",
 			"""
 			set { self[keyPath: \(parentKeypath)][keyPath: \(forwardedKeypath)] = newValue }
+			"""
+		]
+	}
+
+	private static func implicitForwardedPath(arguments: LabeledExprListSyntax, identifier: TokenSyntax) -> [AccessorDeclSyntax] {
+		let first = arguments.startIndex
+		let parentKeypath = arguments[first].expression
+
+		guard
+			let keyPath = parentKeypath.as(KeyPathExprSyntax.self)
+		else { return [] }
+
+		let forwardedKeypath = "\\.\(identifier)"
+
+		return [
+			"""
+			get { self[keyPath: \(parentKeypath)][keyPath: \(raw: forwardedKeypath)] }
+			""",
+			"""
+			set { self[keyPath: \(parentKeypath)][keyPath: \(raw: forwardedKeypath)] = newValue }
 			"""
 		]
 	}
