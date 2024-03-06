@@ -8,3 +8,6 @@ public macro Data(base64Encoded stringLiteral: String) -> Data = #externalMacro(
 
 @freestanding(expression)
 public macro String(base64Encoded stringLiteral: String) -> String = #externalMacro(module: "PizzaMacrosMacros", type: "StringBase64Macro")
+
+@attached(accessor)
+public macro PropertyForwarder<T, U, V>(parentProperty: KeyPath<T, U>, forwardedProperty: KeyPath<U, V>) = #externalMacro(module: "PizzaMacrosMacros", type: "PropertyForwarderPropertyMacro")

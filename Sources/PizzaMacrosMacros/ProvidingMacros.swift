@@ -9,5 +9,6 @@ struct PizzaMacrosPlugin: CompilerPlugin {
 		URLMacro.self,
 		DataBase64Macro.self,
 		StringBase64Macro.self,
+		PropertyForwarderPropertyMacro.self,
 	]
 }

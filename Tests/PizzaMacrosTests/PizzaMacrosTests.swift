@@ -10,6 +10,7 @@ let testMacros: [String: Macro.Type] = [
 	"URL": URLMacro.self,
 	"Data": DataBase64Macro.self,
 	"String": StringBase64Macro.self,
+	"PropertyForwarder": PropertyForwarderPropertyMacro.self,
 ]
 
 final class PizzaMacrosTests: XCTestCase {
@@ -45,5 +46,42 @@ final class PizzaMacrosTests: XCTestCase {
 			""",
 			macros: testMacros)
 	}
+
+    func testPropertyForwarderMacro() throws {
+        assertMacroExpansion(
+            """
+            struct Foo {
+                var value: Int
+                var secondValue: String
+            }
+
+            struct Bar {
+                var foo: Foo
+
+                @PropertyForwarder(parentProperty: \\Bar.foo, forwardedProperty: \\Foo.value)
+                var value: Int
+            }
+            """,
+        expandedSource:
+            """
+            struct Foo {
+                var value: Int
+                var secondValue: String
+            }
+
+            struct Bar {
+                var foo: Foo
+                var value: Int {
+                    get {
+                        self [keyPath: \\Bar.foo] [keyPath: \\Foo.value]
+                    }
+                    set {
+                        self [keyPath: \\Bar.foo] [keyPath: \\Foo.value] = newValue
+                    }
+                }
+            }
+            """,
+        macros: testMacros)
+    }
 }
 #endif
