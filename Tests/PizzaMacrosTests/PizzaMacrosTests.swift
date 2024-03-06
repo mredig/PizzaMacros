@@ -73,10 +73,10 @@ final class PizzaMacrosTests: XCTestCase {
                 var foo: Foo
                 var value: Int {
                     get {
-                        self [keyPath: \\Bar.foo] [keyPath: \\Foo.value]
+                        self.foo.value
                     }
                     set {
-                        self [keyPath: \\Bar.foo] [keyPath: \\Foo.value] = newValue
+                        self.foo.value = newValue
                     }
                 }
             }
@@ -110,10 +110,10 @@ final class PizzaMacrosTests: XCTestCase {
                 var foo: Foo
                 var value: Int {
                     get {
-                        self [keyPath: \\Bar.foo] [keyPath: \\.value]
+                        self.foo.value
                     }
                     set {
-                        self [keyPath: \\Bar.foo] [keyPath: \\.value] = newValue
+                        self.foo.value = newValue
                     }
                 }
             }

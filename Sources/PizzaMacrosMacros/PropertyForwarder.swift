@@ -27,36 +27,35 @@ public struct PropertyForwarderPropertyMacro: AccessorMacro {
 	private static func explicitForwardedPath(arguments: LabeledExprListSyntax) -> [AccessorDeclSyntax] {
 		let first = arguments.startIndex
 		let second = arguments.index(after: first)
-		let parentKeypath = arguments[first].expression
-
-		let forwardedKeypath = arguments[second].expression
+		guard
+			let parentKeypath = arguments[first].expression.as(KeyPathExprSyntax.self),
+			let forwardedKeypath = arguments[second].expression.as(KeyPathExprSyntax.self)
+		else { return [] }
 
 		return [
 			"""
-			get { self[keyPath: \(parentKeypath)][keyPath: \(forwardedKeypath)] }
+			get { self\(parentKeypath.components)\(forwardedKeypath.components) }
 			""",
 			"""
-			set { self[keyPath: \(parentKeypath)][keyPath: \(forwardedKeypath)] = newValue }
+			set { self\(parentKeypath.components)\(forwardedKeypath.components) = newValue }
 			"""
 		]
 	}
 
 	private static func implicitForwardedPath(arguments: LabeledExprListSyntax, identifier: TokenSyntax) -> [AccessorDeclSyntax] {
 		let first = arguments.startIndex
-		let parentKeypath = arguments[first].expression
-
 		guard
-			let keyPath = parentKeypath.as(KeyPathExprSyntax.self)
+			let parentKeypath = arguments[first].expression.as(KeyPathExprSyntax.self)
 		else { return [] }
 
-		let forwardedKeypath = "\\.\(identifier)"
+		let forwardedKeypath = ".\(identifier)"
 
 		return [
 			"""
-			get { self[keyPath: \(parentKeypath)][keyPath: \(raw: forwardedKeypath)] }
+			get { self\(parentKeypath.components)\(raw: forwardedKeypath) }
 			""",
 			"""
-			set { self[keyPath: \(parentKeypath)][keyPath: \(raw: forwardedKeypath)] = newValue }
+			set { self\(parentKeypath.components)\(raw: forwardedKeypath) = newValue }
 			"""
 		]
 	}
