@@ -30,4 +30,10 @@ struct Baz {
 
 	@PropertyForwarder(parentProperty: \Baz.bar.mahFoo)
 	var embeddedValue: Bool
+
+	@PropertyForwarder(forwardedProperty: \Baz.bar.mahFoo.value)
+	var notSameName: Int
+
+	@PropertyForwarder(forwardedProperty: \Baz.foo)
+	var fooByAnotherName: Foo
 }

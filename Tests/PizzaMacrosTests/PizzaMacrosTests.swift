@@ -11,6 +11,7 @@ let testMacros: [String: Macro.Type] = [
 	"Data": DataBase64Macro.self,
 	"String": StringBase64Macro.self,
 	"PropertyForwarder": PropertyForwarderParentPropertyMacro.self,
+    "PropertyForwarder2": PropertyForwarderPrecisePropertyMacro.self,
 ]
 
 final class PizzaMacrosTests: XCTestCase {
@@ -194,6 +195,70 @@ final class PizzaMacrosTests: XCTestCase {
             }
             """#,
         macros: testMacros)
+    }
+
+    func testPropertyForwarderPreciseMacro() throws {
+        assertMacroExpansion(
+            #"""
+            struct Foo {
+                var value: Int
+
+                var secondValue: String
+
+                var embeddedValue: Bool
+            }
+
+            struct Bar {
+                var mahFoo: Foo
+            }
+
+            struct Baz {
+                var foo: Foo
+                var bar: Bar
+
+                @PropertyForwarder2(forwardedProperty: \Baz.bar.mahFoo.value)
+                var notSameName: Int
+
+                @PropertyForwarder2(forwardedProperty: \Baz.foo)
+                var fooByAnotherName: Foo
+            }
+            """#,
+            expandedSource: #"""
+            struct Foo {
+                var value: Int
+
+                var secondValue: String
+
+                var embeddedValue: Bool
+            }
+
+            struct Bar {
+                var mahFoo: Foo
+            }
+
+            struct Baz {
+                var foo: Foo
+                var bar: Bar
+                var notSameName: Int {
+                    get {
+                        self.bar.mahFoo.value
+                    }
+                    set {
+                        self.bar.mahFoo.value = newValue
+                    }
+                }
+                var fooByAnotherName: Foo {
+                    get {
+                        self.foo
+                    }
+                    set {
+                        self.foo = newValue
+                    }
+                }
+            }
+            """#,
+            macros: testMacros
+        )
     }
 }
 #endif

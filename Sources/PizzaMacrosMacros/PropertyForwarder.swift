@@ -60,3 +60,37 @@ public struct PropertyForwarderParentPropertyMacro: AccessorMacro {
 		]
 	}
 }
+
+public struct PropertyForwarderPrecisePropertyMacro: AccessorMacro {
+	public static func expansion(
+		of node: AttributeSyntax,
+		providingAccessorsOf declaration: some DeclSyntaxProtocol,
+		in context: some MacroExpansionContext
+	) throws -> [AccessorDeclSyntax] {
+		guard
+			let varDecl = declaration.as(VariableDeclSyntax.self),
+			let binding = varDecl.bindings.first,
+			binding.accessorBlock == nil,
+			case .argumentList(let arguments) = node.arguments,
+			1 == arguments.count
+		else { return [] }
+
+		return Self.explicitParentPath(arguments: arguments)
+	}
+
+	private static func explicitParentPath(arguments: LabeledExprListSyntax) -> [AccessorDeclSyntax] {
+		let first = arguments.startIndex
+		guard
+			let totalKeypath = arguments[first].expression.as(KeyPathExprSyntax.self)
+		else { return [] }
+
+		return [
+			"""
+			get { self\(totalKeypath.components) }
+			""",
+			"""
+			set { self\(totalKeypath.components) = newValue }
+			"""
+		]
+	}
+}

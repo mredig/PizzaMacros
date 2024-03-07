@@ -14,3 +14,6 @@ public macro PropertyForwarder<T, U, V>(parentProperty: KeyPath<T, U>, forwarded
 
 @attached(accessor)
 public macro PropertyForwarder<T, U>(parentProperty: KeyPath<T, U>) = #externalMacro(module: "PizzaMacrosMacros", type: "PropertyForwarderParentPropertyMacro")
+
+@attached(accessor)
+public macro PropertyForwarder<T, U>(forwardedProperty: KeyPath<T, U>) = #externalMacro(module: "PizzaMacrosMacros", type: "PropertyForwarderPrecisePropertyMacro")

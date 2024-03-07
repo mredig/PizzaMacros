@@ -10,5 +10,6 @@ struct PizzaMacrosPlugin: CompilerPlugin {
 		DataBase64Macro.self,
 		StringBase64Macro.self,
 		PropertyForwarderParentPropertyMacro.self,
+		PropertyForwarderPrecisePropertyMacro.self,
 	]
 }
