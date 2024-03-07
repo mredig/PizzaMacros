@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct PropertyForwarderPropertyMacro: AccessorMacro {
+public struct PropertyForwarderParentPropertyMacro: AccessorMacro {
 	public static func expansion(
 		of node: AttributeSyntax,
 		providingAccessorsOf declaration: some DeclSyntaxProtocol,
@@ -18,13 +18,13 @@ public struct PropertyForwarderPropertyMacro: AccessorMacro {
 		else { return [] }
 
 		if arguments.count == 2 {
-			return explicitForwardedPath(arguments: arguments)
+			return explicitParentPath(arguments: arguments)
 		} else {
-			return implicitForwardedPath(arguments: arguments, identifier: identifier)
+			return implicitParentPath(arguments: arguments, identifier: identifier)
 		}
 	}
 
-	private static func explicitForwardedPath(arguments: LabeledExprListSyntax) -> [AccessorDeclSyntax] {
+	private static func explicitParentPath(arguments: LabeledExprListSyntax) -> [AccessorDeclSyntax] {
 		let first = arguments.startIndex
 		let second = arguments.index(after: first)
 		guard
@@ -42,7 +42,7 @@ public struct PropertyForwarderPropertyMacro: AccessorMacro {
 		]
 	}
 
-	private static func implicitForwardedPath(arguments: LabeledExprListSyntax, identifier: TokenSyntax) -> [AccessorDeclSyntax] {
+	private static func implicitParentPath(arguments: LabeledExprListSyntax, identifier: TokenSyntax) -> [AccessorDeclSyntax] {
 		let first = arguments.startIndex
 		guard
 			let parentKeypath = arguments[first].expression.as(KeyPathExprSyntax.self)

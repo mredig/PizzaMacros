@@ -10,7 +10,7 @@ let testMacros: [String: Macro.Type] = [
 	"URL": URLMacro.self,
 	"Data": DataBase64Macro.self,
 	"String": StringBase64Macro.self,
-	"PropertyForwarder": PropertyForwarderPropertyMacro.self,
+	"PropertyForwarder": PropertyForwarderParentPropertyMacro.self,
 ]
 
 final class PizzaMacrosTests: XCTestCase {
