@@ -6,48 +6,8 @@ import XCTest
 #if canImport(PizzaMacrosMacros)
 import PizzaMacrosMacros
 
-let testMacros: [String: Macro.Type] = [
-	"URL": URLMacro.self,
-	"Data": DataBase64Macro.self,
-	"String": StringBase64Macro.self,
-	"PropertyForwarder": PropertyForwarderParentPropertyMacro.self,
-    "PropertyForwarder2": PropertyForwarderPrecisePropertyMacro.self,
-]
 
-final class PizzaMacrosTests: XCTestCase {
-	func testURLMacro() throws {
-		assertMacroExpansion(
-			#"""
-			#URL("https://google.com")
-			"""#,
-			expandedSource: """
-			URL(string: "https://google.com")!
-			""",
-			macros: testMacros)
-	}
-
-	func testDataBase64Macro() throws {
-		assertMacroExpansion(
-			#"""
-			#Data(base64Encoded: "Zm9vYmFy")
-			"""#,
-			expandedSource: """
-			Data(base64Encoded: "Zm9vYmFy")!
-			""",
-			macros: testMacros)
-	}
-
-	func testStringBase64Macro() throws {
-		assertMacroExpansion(
-			#"""
-			#String(base64Encoded: "Zm9vYmFy")
-			"""#,
-			expandedSource: """
-			String(data: Data(base64Encoded: "Zm9vYmFy")!, encoding: .utf8)!
-			""",
-			macros: testMacros)
-	}
-
+final class PropertyForwardingTests: BaseTest {
     func testPropertyForwarderMacro() throws {
         assertMacroExpansion(
             """
@@ -82,7 +42,7 @@ final class PizzaMacrosTests: XCTestCase {
                 }
             }
             """,
-        macros: testMacros)
+        macros: Self.testMacros)
     }
 
     func testPropertyForwarderMacroImplicit() throws {
@@ -119,7 +79,7 @@ final class PizzaMacrosTests: XCTestCase {
                 }
             }
             """,
-        macros: testMacros)
+        macros: Self.testMacros)
     }
 
     func testPropertyForwarderMacroInception() throws {
@@ -194,7 +154,7 @@ final class PizzaMacrosTests: XCTestCase {
                 }
             }
             """#,
-        macros: testMacros)
+        macros: Self.testMacros)
     }
 
     func testPropertyForwarderPreciseMacro() throws {
@@ -257,8 +217,7 @@ final class PizzaMacrosTests: XCTestCase {
                 }
             }
             """#,
-            macros: testMacros
-        )
+            macros: Self.testMacros)
     }
 }
 #endif
