@@ -10,14 +10,24 @@ struct Foo {
 	var value: Int
 
 	var secondValue: String
+
+	var embeddedValue: Bool
 }
 
 struct Bar {
-	var foo: Foo
+	var mahFoo: Foo
+}
 
-	@PropertyForwarder(parentProperty: \Bar.foo, forwardedProperty: \Foo.value)
+struct Baz {
+	var foo: Foo
+	var bar: Bar
+
+	@PropertyForwarder(parentProperty: \Baz.foo, forwardedProperty: \Foo.value)
 	var value: Int
 
-	@PropertyForwarder(parentProperty: \Bar.foo)
+	@PropertyForwarder(parentProperty: \Baz.foo)
 	var secondValue: String
+
+	@PropertyForwarder(parentProperty: \Baz.bar.mahFoo)
+	var embeddedValue: Bool
 }

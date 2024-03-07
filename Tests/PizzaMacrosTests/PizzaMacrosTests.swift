@@ -120,5 +120,80 @@ final class PizzaMacrosTests: XCTestCase {
             """,
         macros: testMacros)
     }
+
+    func testPropertyForwarderMacroInception() throws {
+        assertMacroExpansion(
+            #"""
+            struct Foo {
+                var value: Int
+
+                var secondValue: String
+
+                var embeddedValue: Bool
+            }
+
+            struct Bar {
+                var mahFoo: Foo
+            }
+
+            struct Baz {
+                var foo: Foo
+                var bar: Bar
+
+                @PropertyForwarder(parentProperty: \Baz.foo, forwardedProperty: \Foo.value)
+                var value: Int
+
+                @PropertyForwarder(parentProperty: \Baz.foo)
+                var secondValue: String
+
+                @PropertyForwarder(parentProperty: \Baz.bar.mahFoo)
+                var embeddedValue: Bool
+            }
+            """#,
+        expandedSource:
+            #"""
+            struct Foo {
+                var value: Int
+
+                var secondValue: String
+
+                var embeddedValue: Bool
+            }
+
+            struct Bar {
+                var mahFoo: Foo
+            }
+
+            struct Baz {
+                var foo: Foo
+                var bar: Bar
+                var value: Int {
+                    get {
+                        self.foo.value
+                    }
+                    set {
+                        self.foo.value = newValue
+                    }
+                }
+                var secondValue: String {
+                    get {
+                        self.foo.secondValue
+                    }
+                    set {
+                        self.foo.secondValue = newValue
+                    }
+                }
+                var embeddedValue: Bool {
+                    get {
+                        self.bar.mahFoo.embeddedValue
+                    }
+                    set {
+                        self.bar.mahFoo.embeddedValue = newValue
+                    }
+                }
+            }
+            """#,
+        macros: testMacros)
+    }
 }
 #endif
