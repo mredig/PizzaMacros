@@ -13,6 +13,7 @@ class BaseTest: XCTestCase {
         "String": StringBase64Macro.self,
         "PropertyForwarder": PropertyForwarderParentPropertyMacro.self,
         "PropertyForwarder2": PropertyForwarderPrecisePropertyMacro.self,
+		"Bitshift": BitshiftLiteralMacro.self,
     ]
 }
 #endif

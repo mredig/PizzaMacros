@@ -17,3 +17,6 @@ public macro PropertyForwarder<T, U>(parentProperty: KeyPath<T, U>) = #externalM
 
 @attached(accessor)
 public macro PropertyForwarder<T, U>(forwardedProperty: KeyPath<T, U>) = #externalMacro(module: "PizzaMacrosMacros", type: "PropertyForwarderPrecisePropertyMacro")
+
+@freestanding(expression)
+public macro Bitshift(_ bitshiftExpression: Int) -> Int = #externalMacro(module: "PizzaMacrosMacros", type: "BitshiftLiteralMacro")
